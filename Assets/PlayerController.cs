@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 7.0f;
 
     [Header("Camera Settings")]
+    public GameObject headObject;
     public GameObject cameraObject;
     public float lookSensitivity = 2.0f;
     public float lookUpLimit = 50.0f;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Goon")]
     [SerializeField] private Animator gunAnimator;
+    [SerializeField] float maxDistance = 100f;
 
     private Rigidbody rb;
     private Vector3 moveDirection;
@@ -50,7 +52,6 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))  // Check for left mouse button click
         {
-            Shoot();  // Execute the shoot method
 
             if (gunAnimator != null)
             {
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, lookDownLimit, lookUpLimit);
 
-        cameraObject.transform.localEulerAngles = new Vector3(rotationX, 0, 0);
+        headObject.transform.localEulerAngles = new Vector3(rotationX, 0f, 0);
         transform.Rotate(Vector3.up * mouseX);
     }
 
@@ -104,11 +105,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(crouchKey))
         {
-            cameraObject.transform.localPosition = new Vector3(0, -0.5f, 0); // Adjust this value as needed
+            headObject.transform.localPosition = new Vector3(0, 1f, 0);
         }
         else
         {
-            cameraObject.transform.localPosition = new Vector3(0, 0, 0);
+            headObject.transform.localPosition = new Vector3(0, 1.4f, 0);
         }
     }
 
@@ -138,9 +139,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Shoot()
+public void Shoot()
     {
-         
+        Camera camera = cameraObject.GetComponent<Camera>();
+
+        Vector3 point = new Vector3(0.5f, 0.5f, 0);
+
+        Ray ray = camera.ViewportPointToRay(point);
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, maxDistance))
+        {
+            if (hit.collider.gameObject.CompareTag("Enemy"))
+            {
+                hit.collider.gameObject.GetComponent<EnemyHit>().Die();
+            }
+        }
     }
+
 
 }

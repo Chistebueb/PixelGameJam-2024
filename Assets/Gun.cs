@@ -8,6 +8,6 @@ public class Gun : MonoBehaviour
 
     public void startShot()
     {
-
+        player.GetComponent<PlayerController>().Shoot();
     }
 }
