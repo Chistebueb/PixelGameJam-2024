@@ -27,13 +27,10 @@ public class HoverEffect : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (animator != null && animator.HasState(0, Animator.StringToHash(animationName)))
-        {
             animator.Play(animationName);
-        }
-        else
-        {
-            Debug.LogError("Animation name is incorrect or does not exist!");
-        }
+    }
+    public void ChangeMenu()
+    {
+        animator.Play(animationName);
     }
 }
