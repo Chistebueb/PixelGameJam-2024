@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    // Serialized fields for customization in the Unity Editor
     [Header("Movement Settings")]
     public float moveSpeed = 5.0f;
     public float sprintSpeed = 10.0f;
@@ -13,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("Camera Settings")]
     public GameObject headObject;
     public GameObject cameraObject;
-    public float lookSensitivity = 2.0f;
+    public static float lookSensitivity = 2.0f;
     public float lookUpLimit = 50.0f;
     public float lookDownLimit = -50.0f;
 
@@ -21,9 +20,9 @@ public class PlayerController : MonoBehaviour
     public Text speedText;
 
     [Header("Key Bindings")]
-    public KeyCode jumpKey = KeyCode.Space;
-    public KeyCode sprintKey = KeyCode.LeftShift;
-    public KeyCode crouchKey = KeyCode.LeftControl;
+    public static KeyCode jumpKey = KeyCode.Space;
+    public static KeyCode sprintKey = KeyCode.LeftShift;
+    public static KeyCode crouchKey = KeyCode.LeftControl;
 
     [Header("Goon")]
     [SerializeField] private Animator gunAnimator;
@@ -50,35 +49,47 @@ public class PlayerController : MonoBehaviour
         HandleCrouch();
         UpdateSpeedUI();
 
-        if (Input.GetMouseButtonDown(0))  // Check for left mouse button click
+        if (Input.GetMouseButtonDown(0)) 
         {
 
             if (gunAnimator != null)
             {
-                gunAnimator.StopPlayback();  // Stop any current animation
-                gunAnimator.Play("shot");    // Play the "shot" animation
+                gunAnimator.StopPlayback(); 
+                gunAnimator.Play("shot");   
             }
         }
     }
 
     private void HandleMovement()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
-        float currentSpeed = moveSpeed;
-        if (Input.GetKey(sprintKey))
-        {
-            currentSpeed = sprintSpeed;
-        }
-        else if (Input.GetKey(crouchKey))
-        {
-            currentSpeed = crouchSpeed;
-        }
 
-        moveDirection = transform.forward * vertical + transform.right * horizontal;
-        rb.MovePosition(rb.position + moveDirection * currentSpeed * Time.deltaTime);
+        Vector3 moveDirection = transform.forward * vertical + transform.right * horizontal;
+        RaycastHit hit;
+
+        if (!Physics.Raycast(transform.position, moveDirection, out hit, 1f))
+        {
+            float currentSpeed = moveSpeed;
+            if (Input.GetKey(sprintKey))
+            {
+                currentSpeed = sprintSpeed;
+            }
+            else if (Input.GetKey(crouchKey))
+            {
+                currentSpeed = crouchSpeed;
+            }
+
+            Vector3 horizontalVelocity = moveDirection.normalized * currentSpeed;
+            rb.velocity = new Vector3(horizontalVelocity.x, rb.velocity.y, horizontalVelocity.z);
+        }
+        else
+        {
+            rb.velocity = new Vector3(0, rb.velocity.y, 0);
+        }
     }
+
 
     private void HandleJump()
     {
