@@ -116,11 +116,11 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(crouchKey))
         {
-            headObject.transform.localPosition = new Vector3(0, 1f, 0);
+            headObject.transform.localPosition = new Vector3(0, 0.5f, 0);
         }
         else
         {
-            headObject.transform.localPosition = new Vector3(0, 1.4f, 0);
+            headObject.transform.localPosition = new Vector3(0, 1f, 0);
         }
     }
 
