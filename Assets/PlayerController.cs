@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     [Header("Key Bindings")]
     public static KeyCode jumpKey = KeyCode.Space;
     public static KeyCode sprintKey = KeyCode.LeftShift;
-    public static KeyCode crouchKey = KeyCode.LeftControl;
+    public static KeyCode crouchKey = KeyCode.C;
 
     [Header("Goon")]
     [SerializeField] private Animator gunAnimator;
