@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         if (!Physics.Raycast(transform.position, moveDirection, out hit, 1f))
         {
             float currentSpeed = moveSpeed;
-            if (Input.GetKey(sprintKey))
+            if (Input.GetKey(sprintKey) && !Input.GetKey(crouchKey))
             {
                 currentSpeed = sprintSpeed;
             }
@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(crouchKey))
         {
-            headObject.transform.localPosition = new Vector3(0, 0.5f, 0);
+            headObject.transform.localPosition = new Vector3(0, 0.3f, 0);
         }
         else
         {
